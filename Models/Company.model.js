@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const student = new mongoose.Schema({
+const company = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -23,6 +23,18 @@ const student = new mongoose.Schema({
         minLength: 10
     },
 
+    userType: {
+        type: String,
+        required: true,
+        default: "STUDENT"
+    },
+
+    userStatus: {
+        type: String,
+        required: true,
+        default: "APPROVED"
+    },
+
     createdAt: {
         type: Date,
         immutable: true,
@@ -36,19 +48,7 @@ const student = new mongoose.Schema({
         default: () => {
             return Date.now()
         }
-    },
-    userType: {
-        type: String,
-        required: true,
-        default: "STUDENT"
-    },
-
-    userStatus: {
-        type: String,
-        required: true,
-        default: "APPROVED"
     }
-
 })
 
-module.exports = mongoose.model("Student", student)
+module.exports = mongoose.model("Company", company)
