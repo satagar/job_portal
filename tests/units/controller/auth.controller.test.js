@@ -33,8 +33,8 @@ describe('register', () => {
                 name: payload.name,
                 username: payload.username,
                 email: payload.email,
-                role: payload.role || 'customer',
-                isEnabled: payload.isEnabled || payload.role === 'customer' || !payload.role,
+                role: payload.role || 'admin',
+                isEnabled: payload.isEnabled || payload.role === 'admin' || !payload.role,
             })
         );
     })
