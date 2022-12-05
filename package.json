@@ -1,0 +1,22 @@
+{
+  "name": "relevel-job_portal",
+  "version": "1.0.0",
+  "description": "Creating api for job portal application\r forked successfully \r ## Tasks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeGrow-Pro/Relevel-job_portal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CodeGrow-Pro/Relevel-job_portal/issues"
+  },
+  "homepage": "https://github.com/CodeGrow-Pro/Relevel-job_portal#readme",
+  "dependencies": {
+    "mongoose": "^6.7.5"
+  }
+}

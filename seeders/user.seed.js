@@ -1,0 +1,34 @@
+exports.users = [
+    {
+        userId:"1",
+        name:"vishal",
+        email:"vishal@gmail.com",
+        phone:9012545454,
+        address:"delhi",
+        userType:"student"
+    },
+    {
+        userId:"2",
+        name:"rahul",
+        email:"rahul@gmail.com",
+        phone:984455455,
+        address:"aagra",
+        userType:"student"
+    }
+    ,{
+        userId:"3",
+        name:"raju",
+        email:"raju@gmail.com",
+        phone:84665665,
+        address:"meerut",
+        userType:"admin"
+    },
+    {
+        userId:"4",
+        name:"rani",
+        email:"rani@gmail.com",
+        phone:922124545,
+        address:"kanpur",
+        userType:"student"
+    }
+]
