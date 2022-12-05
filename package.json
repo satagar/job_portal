@@ -21,5 +21,21 @@
   "bugs": {
     "url": "https://github.com/samiksengupta/job_portal/issues"
   },
-  "homepage": "https://github.com/samiksengupta/job_portal#readme"
+  "homepage": "https://github.com/samiksengupta/job_portal#readme",
+  "devDependencies": {
+    "jest": "^29.3.1",
+    "mongodb-memory-server": "^8.10.1",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.2"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-validator": "^6.14.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.5",
+    "node-cron": "^3.0.2",
+    "nodemailer": "^6.8.0"
+  }
 }
