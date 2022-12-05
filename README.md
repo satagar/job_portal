@@ -1,4 +1,4 @@
-## Node JS CRM Backend Project
+## Node JS Job Portal Backend Project
 
 This is a NodeJS powered Web Application, Backend and API Resource hub for it's client interface.
 
