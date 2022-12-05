@@ -6,11 +6,11 @@ const jobSchema = new mongoose.Schema({
         required : true,
         unique : true
     },
-    company_name : {
+    company : {
         type : String,
         required : true
     },
-    job_Type : {
+    role : {
         type : String,
         required : true
     },
