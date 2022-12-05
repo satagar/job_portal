@@ -73,7 +73,7 @@ npm run server
 
 ### Todo
 
-* ~~Create Login and Registration system~~
-* ~~Create Authentication and Authorization system~~
-* ~~Create Crud Operations with validations~~
+* Create Login and Registration system
+* Create Authentication and Authorization system
+* Create Crud Operations with validations
 * Unit tests
