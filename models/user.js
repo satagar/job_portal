@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const { hashPassword, comparePassword } = require("../helpers");
 
-const roles = ['admin', 'engineer', 'customer'];
+const roles = ['admin'];
 
 const userSchema = mongoose.Schema({
     name: {
@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
     role: {
         type: String,
         enum: roles,
-        default: 'customer'
+        default: 'admin'
     },
     isEnabled: {
         type: Boolean,
@@ -37,21 +37,9 @@ const userSchema = mongoose.Schema({
     refreshToken: {
         type: String,
         select: false
-    },
-    createdAt: {
-        type: Date,
-        immutable: true,
-        default: () => {
-            return Date.now()
-        }
-    },
-    updatedAt: {
-        type: Date,
-        default: () => {
-            return Date.now()
-        }
     }
 }, {
+    timestamps: true,
     statics: {
         roles: roles,
         async authenticate(username, password) {
