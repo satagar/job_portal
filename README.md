@@ -13,3 +13,5 @@ access and which type of data can be seen by everyone or only one particular typ
 ● Display status & response code in the response.
 ● The successful request should return 200 response codes.
 ● Use an appropriate HTTP method out of GET, POST, PUT, PATCH, DELETE, etc
+
+lorem lypsum
