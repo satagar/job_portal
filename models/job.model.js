@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const jonSchema = new mongoose.Schema({
+const jobSchema = new mongoose.Schema({
     jobId:{
         type:Number,
         required:true,
@@ -19,6 +19,7 @@ const jonSchema = new mongoose.Schema({
     },
     sharedBy:{
         type:[mongoose.SchemaType.ObjectId],
+        ref:"company",
         required:true
     },
     status:{
@@ -42,3 +43,5 @@ const jonSchema = new mongoose.Schema({
         }
     }
 })
+const userModel = mongoose.model('jons',jobSchema);
+module.exports = userModel;
