@@ -23,6 +23,11 @@ const student = new mongoose.Schema({
         minLength: 10
     },
 
+    experience: {
+        type: String,
+        required: true
+    },
+
     createdAt: {
         type: Date,
         immutable: true,
