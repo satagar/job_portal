@@ -1,0 +1,19 @@
+{
+  "name": "job_portal",
+  "version": "1.0.0",
+  "description": "Creating api for job portal application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vim22al/job_portal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vim22al/job_portal/issues"
+  },
+  "homepage": "https://github.com/vim22al/job_portal#readme"
+}
