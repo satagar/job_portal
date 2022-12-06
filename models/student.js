@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const { hashPassword, comparePassword } = require("../helpers");
 
 const studentSchema = mongoose.Schema({
     firstName: {
@@ -8,6 +9,18 @@ const studentSchema = mongoose.Schema({
     lastName: {
         type: String,
         required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: function() {
+            return this.isNew;
+        },
+        select: false
     },
     birthdate: {
         type: Date,
@@ -32,11 +45,28 @@ const studentSchema = mongoose.Schema({
         default: true
     },
 }, {
-    timestamps: true
+    timestamps: true,
+    statics: {
+        async authenticate(email, password) {
+            const student = await this.findOne({ email: email }).select('password');
+            if(student) {
+                if(await comparePassword(password, student.password)) {
+                    return student;
+                }
+            }
+            return false;
+        },
+    },
 });
 
 studentSchema.virtual('name').get(function() {
     return `${this.firstName} ${this.lastName}`;
 });
+
+studentSchema.pre('save', async function(next) {
+    const student = this;
+    if(student.isModified('password')) student.password = await hashPassword(student.password);
+    next();
+})
 
 module.exports = mongoose.model("Student", studentSchema);

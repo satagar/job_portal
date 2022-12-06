@@ -2,10 +2,10 @@
 const company = require("./company");
 const job = require("./job");
 const student = require("./student");
-const user = require("./user");
+const admin = require("./admin");
 
 module.exports = {
-    User: user,
+    Admin: admin,
     Company: company,
     Student: student,
     Job: job,

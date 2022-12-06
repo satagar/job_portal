@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
-const status = ['open', 'closed'];
-const type = ['fullTime', 'partTime'];
+const types = ['fullTime', 'partTime'];
+const statuses = ['open', 'closed'];
 
 const jobSchema = mongoose.Schema({
     title: {
@@ -22,29 +22,44 @@ const jobSchema = mongoose.Schema({
     },
     postedByCompany: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'company'
+        ref: 'company',
+        required: true
     },
     applyingStudents: {
-        type: [String]
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'student'
+        }]
     },
     shortlistedStudents: {
-        type: [String]
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'student'
+        }]
     },
     tags: {
         type: [String]
     },
     type: {
         type: String,
-        enum: type,
+        enum: types,
         default: 'fullTime'
     },
     status: {
         type: String,
-        enum: status,
+        enum: statuses,
         default: 'open'
     },
+    isEnabled: {
+        type: Boolean,
+        default: true
+    },
 }, {
-    timestamps: true
+    timestamps: true,
+    statics: {
+        types: types,
+        statuses: statuses
+    },
 });
 
 module.exports = mongoose.model("Job", jobSchema);

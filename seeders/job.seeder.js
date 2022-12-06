@@ -14,8 +14,9 @@ module.exports = {
                 applyingStudents: [],
                 shortlistedStudents: [],
                 tags: faker.helpers.uniqueArray(faker.name.jobType, 5),
-                type: faker.helpers.arrayElement(Job.schema.path('type').enumValues),
-                status: faker.helpers.arrayElement(Job.schema.path('status').enumValues),
+                type: faker.helpers.arrayElement(Job.types),
+                status: faker.helpers.arrayElement(Job.statuses),
+                isEnabled: faker.datatype.boolean()
             }).then(data => {
                 console.log(`Seeded: ${data}`)
             }).catch(err => console.log(`Error seeding: ${err}`));
