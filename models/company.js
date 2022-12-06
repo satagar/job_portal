@@ -12,10 +12,6 @@ const companySchema = mongoose.Schema({
     locations: {
         type: [String]
     },
-    minExperience: {
-        type: Number,
-        required: true
-    },
     isHiring: {
         type: Boolean,
         default: true

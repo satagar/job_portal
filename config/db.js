@@ -1,5 +1,7 @@
 const dotenv = require('dotenv');
+const { ENV } = require('./server');
 dotenv.config();
+
 composeUri = (username, password, host, db) => {
     let userinfo = '';
     let dbinfo = '';
@@ -7,7 +9,8 @@ composeUri = (username, password, host, db) => {
     if(db) dbinfo = `/${db}`;
     return `mongodb://${userinfo}${host}${dbinfo}`
 }
-module.exports = {
+
+const configuration = {
     development: {
         uri: composeUri(process.env.DEV_DB_USERNAME, process.env.DEV_DB_PASSWORD, process.env.DEV_DB_HOSTNAME, process.env.DEV_DB_NAME),
         options: {
@@ -22,4 +25,9 @@ module.exports = {
         uri: composeUri(process.env.PROD_DB_USERNAME, process.env.PROD_DB_PASSWORD, process.env.PROD_DB_HOSTNAME, process.env.PROD_DB_NAME),
         options: {}
     }
+}
+
+module.exports = {
+    uri: configuration[ENV].uri ?? configuration['development'].uri,
+    options: configuration[ENV].options ?? configuration['development'].options,
 }

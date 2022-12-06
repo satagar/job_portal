@@ -16,8 +16,13 @@ const jobSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    minExperience: {
+        type: Number,
+        required: true
+    },
     postedByCompany: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'company'
     },
     applyingStudents: {
         type: [String]

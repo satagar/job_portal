@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const { default: mongoose } = require('mongoose');
+const { uri, options } = require('../config/db');
 const server = require("../config/server");
 
 module.exports = {
@@ -66,6 +68,31 @@ module.exports = {
         return require('crypto').randomBytes(32).toString('hex');
     },
 
+    dbConnect: () => {
+        return new Promise((resolve, reject) => {
+            switch(mongoose.connection.readyState) {
+                case 1: {
+                    console.log(`Already Connected to DB ${uri}\n`);
+                    resolve();
+                    break;
+                }
+                default:
+                    mongoose.connect(uri, options).then(() => {
+                        console.log(`Connected to DB ${uri}\n`);
+                        resolve();
+                    }).catch(err => {
+                        console.log(`Error connecting to DB at ${uri}\n${err}\n`);
+                        reject(err);
+                    });
+            }
+        });
+        
+    },
+
+    randomItem: array => {
+        return array[Math.floor(Math.random() * array.length)];
+    },
+
     slugify: (string, appendTimestamp = false) => {
         const slug = string.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
         if(appendTimestamp) {
@@ -74,5 +101,5 @@ module.exports = {
         return slug;
     },
 
-    isObjectId: id => `${id}`.match(/^[0-9a-fA-F]{24}$/)
+    isObjectId: id => `${id}`.match(/^[0-9a-fA-F]{24}$/),
 };
