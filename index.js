@@ -1,5 +1,5 @@
 const express = require('express');
-const { HOST, PORT } = require('./config/server');
+const { HOST, PORT, ENV } = require('./config/server');
 const { dbConnect } = require('./helpers');
 const masterRouter = require('./routers');
 
