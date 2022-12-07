@@ -7,7 +7,7 @@ exports.findById = async(req, res) => {
         const companys = await Company.find({
             userId: userId
         }).exec()
-        if (companys) {
+        if (companys.role != "Company") {
             res.status(200).send(objectConverter.companyListConvertor(companys))
         } else {
             res.status(200).send({
