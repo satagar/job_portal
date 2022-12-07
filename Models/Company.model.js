@@ -40,10 +40,6 @@ const company = new mongoose.Schema({
         ref: 'Job'
     },
 
-    vacancy: {
-        type: Number,
-        required: true
-    },
 
     createdAt: {
         type: Date,

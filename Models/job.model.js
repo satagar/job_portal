@@ -21,6 +21,11 @@ const jobSchema = new mongoose.Schema({
         type: mongoose.SchemaType.ObjectId,
         ref: 'student'
     },
+
+    vacancy: {
+        type: Number,
+        required: true
+    },
     type: {
         type: String,
         default: "FULL-TIME"
