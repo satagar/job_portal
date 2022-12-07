@@ -26,7 +26,8 @@ exports.job = async(req, res) => {
     if (role == "Company") {
         try {
             const job = await Job.create(jobObj)
-            job.postedByCompany = company.userId
+            job.postedByCompany = company.userId;
+            await company.save();
             res.status(200).send(job)
 
         } catch (error) {
