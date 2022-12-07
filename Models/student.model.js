@@ -42,17 +42,13 @@ const student = new mongoose.Schema({
             return Date.now()
         }
     },
-    userType: {
+
+    role: {
         type: String,
-        required: true,
-        default: "STUDENT"
+        required: true
     },
 
-    userStatus: {
-        type: String,
-        required: true,
-        default: "APPROVED"
-    }
+
 
 })
 
