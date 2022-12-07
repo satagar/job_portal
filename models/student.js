@@ -63,9 +63,15 @@ studentSchema.virtual('name').get(function() {
     return `${this.firstName} ${this.lastName}`;
 });
 
+studentSchema.virtual('role').get(function() {
+    return `student`;
+});
+
 studentSchema.pre('save', async function(next) {
     const student = this;
     if(student.isModified('password')) student.password = await hashPassword(student.password);
+    if(student.isModified('birthdate') && 'string' === typeof student.birthdate) student.birthdate = new Date(student.birthdate);
+    if(student.isModified('tags') && 'string' === typeof student.tags) student.tags = student.tags.split(/[ ,]+/).map(string => string.trim());
     next();
 })
 

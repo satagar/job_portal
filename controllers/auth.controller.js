@@ -1,20 +1,42 @@
-const { handleUnauthorizedResponse, handleNotFoundResponse, handleServerErrorResponse, generateAccessToken, generateRefreshToken, verifyAccessToken, decodeAccessToken } = require("../helpers");
-const { User } = require("../models");
+const { handleUnauthorizedResponse, handleNotFoundResponse, handleServerErrorResponse, generateAccessToken, generateRefreshToken, verifyAccessToken, decodeAccessToken, handleBadRequestResponse } = require("../helpers");
+const { Admin, Student, Company } = require("../models");
 
-const register = async (req, res) => {
-    let user = await User.create({
-        name: req.body.name,
-        username: req.body.username,
-        password: req.body.password,
+const registerStudent = async (req, res) => {
+    let student = await Student.create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
-        role: req.body.role || undefined,
-        isEnabled: req.body.isEnabled || undefined
+        password: req.body.password,
+        birthdate: req.body.birthdate,
+        experience: req.body.experience,
+        tags: req.body.tags,
+        isSeeking: true,
+        isEnabled: true
     }).catch(error => handleServerErrorResponse(res, error));
-    if(user) res.status(201).json(user);
+    if(student) res.status(201).json(student);
+}
+
+const registerCompany = async (req, res) => {
+    let company = await Company.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        description: req.body.description,
+        locations: req.body.locations,
+        isHiring: true,
+        isEnabled: true
+    }).catch(error => handleServerErrorResponse(res, error));
+    if(company) res.status(201).json(company);
 }
 
 const login = async (req, res) => {
-    const user = await User.authenticate(req.body.username, req.body.password).catch(error => handleUnauthorizedResponse(res));
+    let user = null;
+    switch(req.body.role) {
+        case 'admin': user = await Admin.authenticate(req.body.email, req.body.password).catch(error => handleUnauthorizedResponse(res)); break;
+        case 'student': user = await Student.authenticate(req.body.email, req.body.password).catch(error => handleUnauthorizedResponse(res)); break;
+        case 'company': user = await Company.authenticate(req.body.email, req.body.password).catch(error => handleUnauthorizedResponse(res)); break;
+        default: handleBadRequestResponse(res);
+    }
     if(user) {
         user.refreshToken = generateRefreshToken();
         user.save();
@@ -33,10 +55,24 @@ const logout = (req, res) => {
 
 const refresh = async (req, res) => {
     const payload = await decodeAccessToken(req.body.accessToken);
-    const user = await User.findOne({
-        id: payload.id,
-        refreshToken: req.body.refreshToken
-    }).catch(error => handleServerErrorResponse(res, error));
+    let user = null;
+    switch(payload.role) {
+        case 'admin': user = await Admin.findOne({
+            id: payload.id,
+            refreshToken: req.body.refreshToken
+        }).catch(error => handleServerErrorResponse(res, error)); break;
+
+        case 'student': user = await Student.findOne({
+            id: payload.id,
+            refreshToken: req.body.refreshToken
+        }).catch(error => handleServerErrorResponse(res, error)); break;
+
+        case 'company': user = await Company.findOne({
+            id: payload.id,
+            refreshToken: req.body.refreshToken
+        }).catch(error => handleServerErrorResponse(res, error)); break;
+    }
+    
     if(user) {
         user.refreshToken = generateRefreshToken();
         user.save();
@@ -49,8 +85,9 @@ const refresh = async (req, res) => {
 }
 
 module.exports = {
-    register: register,
+    registerStudent: registerStudent,
+    registerCompany: registerCompany,
     login: login,
     logout: logout,
-    refresh: refresh,
+    refresh: refresh
 }

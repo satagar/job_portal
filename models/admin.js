@@ -41,6 +41,10 @@ const adminSchema = mongoose.Schema({
     },
 });
 
+adminSchema.virtual('role').get(function() {
+    return `admin`;
+});
+
 adminSchema.pre('save', async function(next) {
     const admin = this;
     if(admin.isModified('password')) admin.password = await hashPassword(admin.password);

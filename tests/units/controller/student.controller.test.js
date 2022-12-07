@@ -1,5 +1,6 @@
-const { index, create, read, update, destroy } = require("../../../controllers/user.controller");
-const { User } = require("../../../models");
+const { default: mongoose } = require("mongoose");
+const { index, create, read, update, destroy } = require("../../../controllers/student.controller");
+const { Student } = require("../../../models");
 const { connect, clear, close } = require("../../db");
 const { mockRequest, mockResponse } = require("../../interceptor");
 
@@ -9,10 +10,13 @@ afterAll(async () => close());
 
 const payload = {
     _id: '6378a804b5bbfec8ae71acb3',
-    name: 'Test Name',
-    username: 'testname',
+    firstName: 'Test',
+    lastName: 'Name',
+    email: 'test@mail.com',
     password: '123456',
-    email: 'test@mail.com'
+    birthdate: new Date(),
+    experience: 2,
+    tags: ['sample', 'tag'],
 };
 
 describe('index', () => {
@@ -33,8 +37,8 @@ describe('index', () => {
 
     it('should respond 200 on success with array of objects', async () => {
         // arrange
-        const spyUserFind = jest.spyOn(User, 'find').mockResolvedValue([
-            new User(payload)
+        const spyStudentFind = jest.spyOn(Student, 'find').mockResolvedValue([
+            new Student(payload)
         ]);
         const req = mockRequest();
         const res = mockResponse();
@@ -43,15 +47,20 @@ describe('index', () => {
         await index(req, res);
 
         // assert
-        expect(spyUserFind).toHaveBeenCalled();
+        expect(spyStudentFind).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(
             expect.arrayContaining([
                 expect.objectContaining({
-                    _id: payload._id,
-                    name: payload.name,
-                    username: payload.username,
+                    _id: mongoose.Types.ObjectId(payload._id),
+                    firstName: payload.firstName,
+                    lastName: payload.lastName,
                     email: payload.email,
+                    birthdate: payload.birthdate,
+                    experience: payload.experience,
+                    tags: payload.tags,
+                    name: `${payload.firstName} ${payload.lastName}`,
+                    role: 'student'
                 })
             ])
         );
@@ -59,7 +68,7 @@ describe('index', () => {
 
     it('should respond 500 on failure with error message', async () => {
         // arrange
-        const spyUserFind = jest.spyOn(User, 'find').mockRejectedValue('error');
+        const spyStudentFind = jest.spyOn(Student, 'find').mockRejectedValue('error');
         const req = mockRequest();
         const res = mockResponse();
         
@@ -67,7 +76,7 @@ describe('index', () => {
         await index(req, res);
 
         // assert
-        expect(spyUserFind).toHaveBeenCalled();
+        expect(spyStudentFind).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -92,11 +101,14 @@ describe('create', () => {
         expect(res.status).toHaveBeenCalledWith(201);
         expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
-                name: payload.name,
-                username: payload.username,
+                firstName: payload.firstName,
+                lastName: payload.lastName,
                 email: payload.email,
-                role: payload.role || 'customer',
-                isEnabled: payload.isEnabled || payload.role === 'customer' || !payload.role,
+                birthdate: payload.birthdate,
+                experience: payload.experience,
+                tags: payload.tags,
+                name: `${payload.firstName} ${payload.lastName}`,
+                role: 'student'
             })
         );
     })
@@ -104,7 +116,7 @@ describe('create', () => {
     it('should respond 500 on failure with error message', async () => {
 
         // arrange
-        const spyUserCreate = jest.spyOn(User, 'create').mockRejectedValue('error');
+        const spyStudentCreate = jest.spyOn(Student, 'create').mockRejectedValue('error');
         const req = mockRequest();
         const res = mockResponse();
         req.body = payload;
@@ -113,7 +125,7 @@ describe('create', () => {
         await create(req, res);
 
         // assert
-        expect(spyUserCreate).toHaveBeenCalled();
+        expect(spyStudentCreate).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -127,7 +139,7 @@ describe('read', () => {
     it('should respond 200 on success with requested object', async () => {
 
         // arrange
-        const spyUserFindById = jest.spyOn(User, 'findById').mockResolvedValue(new User(payload));
+        const spyStudentFindById = jest.spyOn(Student, 'findById').mockResolvedValue(new Student(payload));
         const req = mockRequest();
         const res = mockResponse();
         req.params.id = payload._id;
@@ -136,13 +148,19 @@ describe('read', () => {
         await read(req, res);
 
         // assert
-        expect(spyUserFindById).toHaveBeenCalled();
+        expect(spyStudentFindById).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
-                name: payload.name,
-                username: payload.username,
-                email: payload.email
+                _id: mongoose.Types.ObjectId(payload._id),
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+                email: payload.email,
+                birthdate: payload.birthdate,
+                experience: payload.experience,
+                tags: payload.tags,
+                name: `${payload.firstName} ${payload.lastName}`,
+                role: 'student'
             })
         );
     })
@@ -150,7 +168,7 @@ describe('read', () => {
     it('should respond 404 on data null with error message', async () => {
 
         // arrange
-        const spyUserFindById = jest.spyOn(User, 'findById').mockResolvedValue(null);
+        const spyStudentFindById = jest.spyOn(Student, 'findById').mockResolvedValue(null);
         const req = mockRequest();
         const res = mockResponse();
         req.params.id = payload._id;
@@ -159,7 +177,7 @@ describe('read', () => {
         await read(req, res);
 
         // assert
-        expect(spyUserFindById).toHaveBeenCalled();
+        expect(spyStudentFindById).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -190,7 +208,7 @@ describe('read', () => {
     it('should respond 500 on failure with error message', async () => {
 
         // arrange
-        const spyUserFindById = jest.spyOn(User, 'findById').mockRejectedValue('error');
+        const spyStudentFindById = jest.spyOn(Student, 'findById').mockRejectedValue('error');
         const req = mockRequest();
         const res = mockResponse();
         req.params.id = payload._id;
@@ -199,7 +217,7 @@ describe('read', () => {
         await read(req, res);
 
         // assert
-        expect(spyUserFindById).toHaveBeenCalled();
+        expect(spyStudentFindById).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -213,23 +231,29 @@ describe('update', () => {
     it('should respond 200 on success with requested object', async () => {
 
         // arrange
-        const spyUserFindById = jest.spyOn(User, 'findById').mockResolvedValue(new User(payload));
+        const spyStudentFindById = jest.spyOn(Student, 'findById').mockResolvedValue(new Student(payload));
         const req = mockRequest();
         const res = mockResponse();
         req.params.id = payload._id;
         req.body = payload;
 
         // act
-        await read(req, res);
+        await update(req, res);
 
         // assert
-        expect(spyUserFindById).toHaveBeenCalled();
+        expect(spyStudentFindById).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
-                name: payload.name,
-                username: payload.username,
-                email: payload.email
+                _id: mongoose.Types.ObjectId(payload._id),
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+                email: payload.email,
+                birthdate: payload.birthdate,
+                experience: payload.experience,
+                tags: payload.tags,
+                name: `${payload.firstName} ${payload.lastName}`,
+                role: 'student'
             })
         );
     })
@@ -237,16 +261,16 @@ describe('update', () => {
     it('should respond 404 on data null with error message', async () => {
 
         // arrange
-        const spyUserFindById = jest.spyOn(User, 'findById').mockResolvedValue(null);
+        const spyStudentFindById = jest.spyOn(Student, 'findById').mockResolvedValue(null);
         const req = mockRequest();
         const res = mockResponse();
         req.params.id = payload._id;
 
         // act
-        await read(req, res);
+        await update(req, res);
 
         // assert
-        expect(spyUserFindById).toHaveBeenCalled();
+        expect(spyStudentFindById).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -263,7 +287,7 @@ describe('update', () => {
         req.params.id = 1;
 
         // act
-        await read(req, res);
+        await update(req, res);
 
         // assert
         expect(res.status).toHaveBeenCalledWith(404);
@@ -277,16 +301,16 @@ describe('update', () => {
     it('should respond 500 on failure with error message', async () => {
 
         // arrange
-        const spyUserFindById = jest.spyOn(User, 'findById').mockRejectedValue('error');
+        const spyStudentFindById = jest.spyOn(Student, 'findById').mockRejectedValue('error');
         const req = mockRequest();
         const res = mockResponse();
         req.params.id = payload._id;
 
         // act
-        await read(req, res);
+        await update(req, res);
 
         // assert
-        expect(spyUserFindById).toHaveBeenCalled();
+        expect(spyStudentFindById).toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith(
             expect.objectContaining({

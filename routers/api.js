@@ -1,6 +1,6 @@
 const express = require('express');
 const authController = require('../controllers/auth.controller');
-const userController = require('../controllers/user.controller');
+const studentController = require('../controllers/student.controller');
 const validator = require('../middlewares/validators');
 const { authenticate, authorize } = require('../middlewares/auth');
 
@@ -13,21 +13,22 @@ apiRouter.get('/', (req, res) => {
     });
 });
 
-apiRouter.route('/register').post(validator.authRegister, authController.register);
+apiRouter.route('/register/student').post(validator.authRegisterStudent, authController.registerStudent);
+apiRouter.route('/register/company').post(validator.authRegisterCompany, authController.registerCompany);
 apiRouter.route('/login').post(validator.authLogin, authController.login);
 apiRouter.route('/logout').post(authController.logout);
 apiRouter.route('/refresh').post(validator.authRefresh, authController.refresh);
 
 apiRouterSecure.use(authenticate);
 
-apiRouterSecure.route('/users')
-    .get(authorize, userController.index)
-    .post(authorize, validator.userCreate, userController.create);
+apiRouterSecure.route('/students')
+    .get(authorize, studentController.index)
+    .post(authorize, validator.studentCreate, studentController.create);
 
-apiRouterSecure.route('/users/:id')
-    .get(authorize, userController.read)
-    .put(authorize, validator.userUpdate, userController.update)
-    .delete(authorize, userController.destroy);
+apiRouterSecure.route('/students/:id')
+    .get(authorize, studentController.read)
+    .put(authorize, validator.studentUpdate, studentController.update)
+    .delete(authorize, studentController.destroy);
 
 module.exports = {
     apiRouter: apiRouter, 

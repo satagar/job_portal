@@ -1,6 +1,8 @@
 const { check, validationResult } = require('express-validator');
 const { isObjectId } = require('../helpers');
-const { User, Ticket } = require("../models");
+const { Admin, Student, Company } = require("../models");
+
+const roles = ['admin', 'student', 'company'];
 
 const handleValidation = (req, res, next) => {
     const errors = validationResult(req);
@@ -9,19 +11,30 @@ const handleValidation = (req, res, next) => {
 }
 
 module.exports = {
-    authRegister: [
-        check('name').trim().escape().not().isEmpty().withMessage('Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Name must be minimum 3 characters').bail(),
-        check('username').trim().escape().not().isEmpty().withMessage('Username cannot be empty').bail().custom(value => {
-            return User.findOne({ username: value }).then(user => { if(user) return Promise.reject('Username is already taken')} );
-        }),
-        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().custom(value => {
-            return User.findOne({ email: value }).then(user => { if(user) return Promise.reject('Email is already taken')} );
+    authRegisterStudent: [
+        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().isEmail().withMessage('Email is invalid').bail().custom(value => {
+            return Student.findOne({ email: value }).then(student => { if(student) return Promise.reject('Student Email is already taken')} );
         }),
         check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
+        check('firstName').trim().escape().not().isEmpty().withMessage('First Name cannot be empty').bail().isLength({ min: 3 }).withMessage('First Name must be minimum 3 characters').bail(),
+        check('lastName').trim().escape().not().isEmpty().withMessage('Last Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Last Name must be minimum 3 characters').bail(),
+        check('birthdate').trim().escape().not().isEmpty().withMessage('Birthdate cannot be empty').bail(),
+        check('experience').trim().escape().not().isEmpty().withMessage('Experience cannot be empty').bail().isNumeric().withMessage('Experience must be a number (in years)').bail(),
+        handleValidation
+    ],
+    authRegisterCompany: [
+        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().isEmail().withMessage('Email is invalid').bail().custom(value => {
+            return Company.findOne({ email: value }).then(company => { if(company) return Promise.reject('Company Email is already taken')} );
+        }),
+        check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
+        check('name').trim().escape().not().isEmpty().withMessage('Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Name must be minimum 3 characters').bail(),
         handleValidation
     ],
     authLogin: [
-        check('username').trim().escape().not().isEmpty().withMessage('Username cannot be empty').bail(),
+        check('role').trim().escape().not().isEmpty().withMessage('Role cannot be empty').bail().custom(value => {
+            if(!roles.includes(value)) throw new Error(`Role is invalid. Please provide any of: ${roles.join()}`);
+        }),
+        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail(),
         check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail(),
         handleValidation
     ],
@@ -30,54 +43,26 @@ module.exports = {
         check('refreshToken').trim().escape().not().isEmpty().withMessage('Refresh token cannot be empty').bail(),
         handleValidation
     ],
-    userCreate: [
-        check('name').trim().escape().not().isEmpty().withMessage('Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Name must be minimum 3 characters').bail(),
-        check('username').trim().escape().not().isEmpty().withMessage('Username cannot be empty').bail().custom(value => {
-            return User.findOne({ username: value }).then(user => { if(user) return Promise.reject('Username is already taken')} );
-        }),
-        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().custom(value => {
-            return User.findOne({ email: value }).then(user => { if(user) return Promise.reject('Email is already taken')} );
+    studentCreate: [
+        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().isEmail().withMessage('Email is invalid').bail().custom(value => {
+            return Student.findOne({ email: value }).then(student => { if(student) return Promise.reject('Student Email is already taken')} );
         }),
         check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
+        check('firstName').trim().escape().not().isEmpty().withMessage('First Name cannot be empty').bail().isLength({ min: 3 }).withMessage('First Name must be minimum 3 characters').bail(),
+        check('lastName').trim().escape().not().isEmpty().withMessage('Last Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Last Name must be minimum 3 characters').bail(),
+        check('birthdate').trim().escape().not().isEmpty().withMessage('Birthdate cannot be empty').bail(),
+        check('experience').trim().escape().not().isEmpty().withMessage('Experience cannot be empty').bail().isNumeric().withMessage('Experience must be a number (in years)').bail(),
         handleValidation
     ],
-    userUpdate: [
-        check('name').optional().trim().escape().not().isEmpty().withMessage('Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Name must be minimum 3 characters').bail(),
-        check('username').optional().trim().escape().not().isEmpty().withMessage('Username cannot be empty').bail().custom((value, { req }) => {
-            return User.findOne({ username: value, _id: { $ne: req.params.id }}).then(user => { if(user) return Promise.reject('Username is already taken')} );
+    studentUpdate: [
+        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().isEmail().withMessage('Email is invalid').bail().custom(value => {
+            return Student.findOne({ email: value, _id: { $ne: req.params.id } }).then(student => { if(student) return Promise.reject('Email is already taken')} );
         }),
-        check('email').optional().trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().custom((value, { req }) => {
-            return User.findOne({ email: value, _id: { $ne: req.params.id } }).then(user => { if(user) return Promise.reject('Email is already taken')} );
-        }),
-        check('password').optional().trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
-        handleValidation
-    ],
-    ticketCreate: [
-        check('title').trim().escape().not().isEmpty().withMessage('Title cannot be empty').bail().isLength({ min: 3 }).withMessage('Title must be minimum 3 characters').bail(),
-        check('description').trim().escape().not().isEmpty().withMessage('Description cannot be empty').bail().isLength({ min: 3 }).withMessage('Description must be minimum 3 characters').bail(),
-        check('priority').trim().escape().not().isEmpty().withMessage('Priority cannot be empty').bail().isNumeric().withMessage('Priority must be a number').bail(),
-        check('status').trim().escape().not().isEmpty().withMessage('Status cannot be empty').bail().custom(value => {
-            if(!Ticket.statuses.includes(value)) throw new Error(`Status is invalid. Please provide any of: ${Ticket.statuses.join()}`);
-        }),
-        handleValidation
-    ],
-    ticketUpdate: [
-        check('title').optional().trim().escape().not().isEmpty().withMessage('Title cannot be empty').bail().isLength({ min: 3 }).withMessage('Title must be minimum 3 characters').bail(),
-        check('description').optional().trim().escape().not().isEmpty().withMessage('Description cannot be empty').bail().isLength({ min: 3 }).withMessage('Description must be minimum 3 characters').bail(),
-        check('priority').optional().trim().escape().not().isEmpty().withMessage('Priority cannot be empty').bail().isNumeric().withMessage('Priority must be a number').bail(),
-        check('status').optional().trim().escape().not().isEmpty().withMessage('Status cannot be empty').bail().custom(value => {
-            if(!Ticket.statuses.includes(value)) throw new Error(`Status is invalid. Please provide any of: ${Ticket.statuses.join()}`);
-            return true;
-        }),
-        handleValidation
-    ],
-    notificationCreate: [
-        check('subject').trim().escape().not().isEmpty().withMessage('Subject cannot be empty').bail().isLength({ min: 3 }).withMessage('Subject must be minimum 3 characters').bail(),
-        check('body').trim().escape().not().isEmpty().withMessage('Body cannot be empty').bail().isLength({ min: 3 }).withMessage('Body must be minimum 3 characters').bail(),
-        check('emails').not().isArray().withMessage('Emails must be an array').bail(),
-        check('ticketId').trim().escape().not().isEmpty().withMessage('Ticket ID cannot be empty').bail().custom(async value => {
-            if(!isObjectId(value) || (await Ticket.count({ _id: value })) < 1) throw new Error(`Ticket is invalid. Please provide valid ticket ID`);
-        }),
+        check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
+        check('firstName').trim().escape().not().isEmpty().withMessage('First Name cannot be empty').bail().isLength({ min: 3 }).withMessage('First Name must be minimum 3 characters').bail(),
+        check('lastName').trim().escape().not().isEmpty().withMessage('Last Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Last Name must be minimum 3 characters').bail(),
+        check('birthdate').trim().escape().not().isEmpty().withMessage('Birthdate cannot be empty').bail(),
+        check('experience').trim().escape().not().isEmpty().withMessage('Experience cannot be empty').bail().isNumeric().withMessage('Experience must be a number (in years)').bail(),
         handleValidation
     ],
 }

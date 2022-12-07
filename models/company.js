@@ -19,8 +19,7 @@ const companySchema = mongoose.Schema({
         select: false
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     locations: {
         type: [String]
@@ -48,9 +47,14 @@ const companySchema = mongoose.Schema({
     },
 });
 
+companySchema.virtual('role').get(function() {
+    return `company`;
+});
+
 companySchema.pre('save', async function(next) {
     const company = this;
     if(company.isModified('password')) company.password = await hashPassword(company.password);
+    if(company.isModified('locations') && 'string' === typeof company.locations) student.locations = student.locations.split(/[ ,]+/).map(string => string.trim());
     next();
 })
 
