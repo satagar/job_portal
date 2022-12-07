@@ -1,5 +1,4 @@
 const { check, validationResult } = require('express-validator');
-const { isObjectId } = require('../helpers');
 const { Admin, Student, Company } = require("../models");
 
 const roles = ['admin', 'student', 'company'];
