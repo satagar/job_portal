@@ -22,7 +22,6 @@ const create = async (req, res) => {
         isEnabled: true
     }).then(data => {
         res.status(201).json(data);
-        res.end();
     }).catch(error => {
         handleServerErrorResponse(res, error);
     });
@@ -33,7 +32,6 @@ const read = async (req, res) => {
     await Student.findById(req.params.id).then(data => {
         if(data) {
             res.status(200).json(data);
-            res.end();
         }
         else handleNotFoundResponse(res);
     }).catch(error => {
@@ -57,7 +55,6 @@ const update = async (req, res) => {
             if(data.isModified()) {
                 data.save().then(data => {
                     res.status(200).json(data);
-                    res.end();
                 }).catch(error => {
                     handleServerErrorResponse(res, error);
                 });
@@ -81,7 +78,6 @@ const destroy = (req, res) => {
         if(data) {
             data.deleteOne({ _id: req.params.id }).then(data => {
                 res.status(200).json(data);
-                res.end();
             }).catch(error => {
                 handleServerErrorResponse(res, error);
             });

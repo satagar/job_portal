@@ -4,6 +4,7 @@ const studentController = require('../controllers/student.controller');
 const companyController = require('../controllers/company.controller');
 const validator = require('../middlewares/validators');
 const { authenticate, authorize, authorizeRoles } = require('../middlewares/auth');
+const jobController = require('../controllers/job.controller');
 
 const apiRouter = express.Router();
 const apiRouterSecure = express.Router();
@@ -39,6 +40,18 @@ apiRouterSecure.route('/companies/:id')
     .get(authorizeRoles(['admin', 'student']), companyController.read)
     .put(authorize, validator.companyUpdate, companyController.update)
     .delete(authorize, companyController.destroy);
+
+apiRouterSecure.route('/jobs')
+    .get(jobController.index)
+    .post(authorizeRoles(['company']), validator.jobCreate, jobController.create);
+
+apiRouterSecure.route('/jobs/:id')
+    .get(authorizeRoles(['admin', 'student']), jobController.read)
+    .put(authorizeRoles(['company']), validator.jobUpdate, jobController.update)
+    .delete(authorizeRoles(['admin', 'company']), authorize, jobController.destroy);
+
+apiRouterSecure.route('/jobs/:id/apply')
+    .patch(authorizeRoles(['student']), jobController.apply)
 
 module.exports = {
     apiRouter: apiRouter, 

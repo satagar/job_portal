@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-const { Admin, Student, Company } = require("../models");
+const { Admin, Student, Company, Job } = require("../models");
 
 const roles = ['admin', 'student', 'company'];
 
@@ -78,6 +78,30 @@ module.exports = {
         }),
         check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
         check('name').trim().escape().not().isEmpty().withMessage('Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Name must be minimum 3 characters').bail(),
+        handleValidation
+    ],
+    jobCreate: [
+        check('title').trim().escape().not().isEmpty().withMessage('Title cannot be empty').bail().isLength({ min: 3 }).withMessage('Title must be minimum 3 characters').bail(),
+        check('description').trim().escape().not().isEmpty().withMessage('Description cannot be empty').bail().isLength({ min: 3 }).withMessage('Description must be minimum 3 characters').bail(),
+        check('minExperience').trim().escape().not().isEmpty().withMessage('Minimum Experience cannot be empty').bail().isNumeric().withMessage('Minimum Experience must be a number (in years)').bail(),
+        check('type').trim().escape().not().isEmpty().withMessage('Type cannot be empty').bail().custom(value => {
+            if(!Job.types.includes(value)) throw new Error(`Role is invalid. Please provide any of: ${Job.types.join()}`);
+        }),
+        check('status').trim().escape().not().isEmpty().withMessage('Status cannot be empty').bail().custom(value => {
+            if(!Job.statuses.includes(value)) throw new Error(`Status is invalid. Please provide any of: ${Job.statuses.join()}`);
+        }),
+        handleValidation
+    ],
+    jobUpdate: [
+        check('title').trim().escape().not().isEmpty().withMessage('Title cannot be empty').bail().isLength({ min: 3 }).withMessage('Title must be minimum 3 characters').bail(),
+        check('description').trim().escape().not().isEmpty().withMessage('Description cannot be empty').bail().isLength({ min: 3 }).withMessage('Description must be minimum 3 characters').bail(),
+        check('minExperience').trim().escape().not().isEmpty().withMessage('Minimum Experience cannot be empty').bail().isNumeric().withMessage('Minimum Experience must be a number (in years)').bail(),
+        check('type').trim().escape().not().isEmpty().withMessage('Type cannot be empty').bail().custom(value => {
+            if(!Job.types.includes(value)) throw new Error(`Role is invalid. Please provide any of: ${Job.types.join()}`);
+        }),
+        check('status').trim().escape().not().isEmpty().withMessage('Status cannot be empty').bail().custom(value => {
+            if(!Job.statuses.includes(value)) throw new Error(`Status is invalid. Please provide any of: ${Job.statuses.join()}`);
+        }),
         handleValidation
     ],
 }
