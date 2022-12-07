@@ -39,18 +39,76 @@ exports.login = async(req, res) => {
     const body = req.body;
     const userId = body.userId;
     const password = body.password;
-    // const role = body.role;
+    const role = body.role;
 
     try {
         const user = await Student.findOne({ userId: userId });
-        //     if (role == 'student') {
-        //         const student = await Student.findOne({ userId: userId })
-        //     }else{
-        //     const company = await Company.findOne({ userId: userId })
-        // }
-        //     if (student == null || company == null) {
+        if (role == 'student') {
+            const student = await Student.findOne({ userId: userId })
+            if (student == null) {
+                res.status(400).send({
+                    message: "User Not Found!"
+                })
+                return;
+            }
+            var validPassword = bcrypt.compareSync(
+                body.password,
+                user.password
+            )
 
-        if (user == null) {
+            if (!validPassword) {
+                res.status(401).send({
+                    message: "Invalid Password"
+                })
+                return;
+            }
+
+            var token = jwt.sign({ id: user.userId }, config.secret, {
+                expiresIn: 86400
+            });
+            const userResp = {
+                name: user.name,
+                userId: user.userId,
+                emailId: user.emailId,
+                role: user.role,
+                accessToken: token
+            }
+
+            res.status(200).send(userResp);
+        } else {
+            const company = await Company.findOne({ userId: userId })
+            if (company == null) {
+                res.status(400).send({
+                    message: "User Not Found!"
+                })
+                return;
+            }
+            var validPassword = bcrypt.compareSync(
+                body.password,
+                user.password
+            )
+
+            if (!validPassword) {
+                res.status(401).send({
+                    message: "Invalid Password"
+                })
+                return;
+            }
+
+            var token = jwt.sign({ id: user.userId }, config.secret, {
+                expiresIn: 86400
+            });
+            const userResp = {
+                name: user.name,
+                userId: user.userId,
+                emailId: user.emailId,
+                role: user.role,
+                accessToken: token
+            }
+
+            res.status(200).send(userResp);
+        }
+        if (company == null) {
             res.status(400).send({
                 message: "User Not Found!"
             })

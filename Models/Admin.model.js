@@ -23,6 +23,11 @@ const admin = new mongoose.Schema({
         minLength: 10
     },
 
+    role: {
+        type: String,
+        required: true
+    },
+
     createdAt: {
         type: Date,
         immutable: true,
