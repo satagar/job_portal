@@ -4,7 +4,7 @@ const objectConverter = require('../Utilis/objectConverter')
 exports.findById = async(req, res) => {
     const userId = req.params.userId;
     try {
-        const companys = await User.find({
+        const companys = await Company.find({
             userId: userId
         }).exec()
         if (companys) {
