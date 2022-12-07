@@ -4,9 +4,9 @@ const { Student } = require("../../../models");
 const { connect, clear, close } = require("../../db");
 const { mockRequest, mockResponse } = require("../../interceptor");
 
-beforeAll(async () => connect());
-beforeEach(async () => clear());
-afterAll(async () => close());
+beforeAll(async () => await connect());
+beforeEach(async () => await clear());
+afterAll(async () => await close());
 
 const payload = {
     _id: '6378a804b5bbfec8ae71acb3',

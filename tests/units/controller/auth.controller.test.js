@@ -3,9 +3,9 @@ const { Admin, Student, Company } = require("../../../models");
 const { connect, clear, close } = require("../../db");
 const { mockRequest, mockResponse } = require("../../interceptor");
 
-beforeAll(async () => connect());
-beforeEach(async () => clear());
-afterAll(async () => close());
+beforeAll(async () => await connect());
+beforeEach(async () => await clear());
+afterAll(async () => await close());
 
 describe('registerStudent', () => {
 
