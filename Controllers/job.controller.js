@@ -1,10 +1,10 @@
 const Job = require('../Models/job.model');
 const Company = require('../Models/Company.model')
-const Student = require('../Models/student.model');
-const { studentData } = require('../init');
+
+
 
 exports.job = async(req, res) => {
-    const user = req.params.userId;
+    const role = req.params.role;
     jobObj = {
         title: req.body.title,
         description: req.body.description,
@@ -13,11 +13,20 @@ exports.job = async(req, res) => {
         status: req.body.status,
         vacancy: req.body.vacancy
     }
+    let company;
 
-    if (user.role == "Company") {
+    try {
+        company = await Company.findOne({ userId: userId });
+
+    } catch (error) {
+        res.status(500).send({
+            message: 'Error Occurred!'
+        })
+    }
+    if (role == "Company") {
         try {
             const job = await Job.create(jobObj)
-            job.postedByCompany = user.userId
+            job.postedByCompany = company.userId
             res.status(200).send(job)
 
         } catch (error) {
