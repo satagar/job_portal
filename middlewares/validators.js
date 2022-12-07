@@ -65,4 +65,20 @@ module.exports = {
         check('experience').trim().escape().not().isEmpty().withMessage('Experience cannot be empty').bail().isNumeric().withMessage('Experience must be a number (in years)').bail(),
         handleValidation
     ],
+    companyCreate: [
+        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().isEmail().withMessage('Email is invalid').bail().custom(value => {
+            return Student.findOne({ email: value }).then(student => { if(student) return Promise.reject('Student Email is already taken')} );
+        }),
+        check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
+        check('name').trim().escape().not().isEmpty().withMessage('Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Name must be minimum 3 characters').bail(),
+        handleValidation
+    ],
+    companyUpdate: [
+        check('email').trim().escape().not().isEmpty().withMessage('Email cannot be empty').bail().isEmail().withMessage('Email is invalid').bail().custom(value => {
+            return Student.findOne({ email: value, _id: { $ne: req.params.id } }).then(student => { if(student) return Promise.reject('Email is already taken')} );
+        }),
+        check('password').trim().escape().not().isEmpty().withMessage('Password cannot be empty').bail().isLength({ min: 5 }).withMessage('Password must be minimum 5 characters').bail(),
+        check('name').trim().escape().not().isEmpty().withMessage('Name cannot be empty').bail().isLength({ min: 3 }).withMessage('Name must be minimum 3 characters').bail(),
+        handleValidation
+    ],
 }

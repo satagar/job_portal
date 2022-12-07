@@ -25,8 +25,7 @@ module.exports = {
     authorizeRoles: roles => {
         return async (req, res, next) => {
             if(req.user) {
-                const user = await User.findById(req.user.id);
-                const authorized = Array.isArray(roles) ? roles.includes(user.role) : roles === user.role;
+                const authorized = Array.isArray(roles) ? roles.includes(req.user.role) : roles === req.user.role;
                 if(authorized) return next();
             }
             res.status(403).send({ message: 'Permission not granted' });
