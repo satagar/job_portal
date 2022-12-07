@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const serverConfig = require("./config/serverConfig");
+const router = require('./routes/routes');
 const app = express();
 
 
@@ -18,6 +19,8 @@ mongoose.connect('mongodb://localhost/job_portal', {family : 4}, (err) => {
         })
     }
 })
+
+app.use(router)
 
 app.get('/', (req, res) => {
     res.send('Welcome the the job portal!')

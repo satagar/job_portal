@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema({
+    type : {
+        type : String,
+        required : true
+    },
     stu_id : {
         type : String,
         required : true,
@@ -8,6 +12,10 @@ const studentSchema = new mongoose.Schema({
     },
     name : {
         type : String,
+        required : true
+    },
+    phoneNumber : {
+        type : Number,
         required : true
     },
     email : {
@@ -21,11 +29,10 @@ const studentSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    createdAt : {
-        type : Date,
-        default : () => {
-            return Date.now();
-        }
+    studentStatus : {
+        type : String,
+        required : true,
+        default : 'APPROVED'
     }
 })
 

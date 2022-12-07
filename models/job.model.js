@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const status = ['open', 'closed'];
+const type = ['fullTime', 'partTime'];
+
 const jobSchema = new mongoose.Schema({
     job_id : {
         type : String,
@@ -18,6 +21,9 @@ const jobSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    postedByCompany: {
+        type: String
+    },
     salary : {
         type : String,
         required : true
@@ -30,6 +36,16 @@ const jobSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    type: {
+        type: String,
+        enum: type,
+        default: 'fullTime'
+    },
+    status: {
+        type: String,
+        enum: status,
+        default: 'open'
+    },
     createdAt : {
         type : Date,
         default : () => {
@@ -39,4 +55,4 @@ const jobSchema = new mongoose.Schema({
 })
 
 
-module.exports = mongoose.model("Student", studentSchema);
+module.exports = mongoose.model("Job", jobSchema);
