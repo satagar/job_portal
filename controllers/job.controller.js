@@ -2,7 +2,7 @@ const { isObjectId, handleServerErrorResponse, handleNotFoundResponse, handleBad
 const { Job, Company } = require("../models");
 
 const index = async (req, res) => {
-    const query = (req.user.role === 'company') ? { postedByCompany = req.user.id } : {};
+    const query = (req.user.role === 'company') ? { postedByCompany: req.user.id } : {};
     await Job.find(query).then(items => {
         res.status(200).json(items);
     }).catch(error => {
@@ -30,7 +30,7 @@ const create = async (req, res) => {
 
 const read = async (req, res) => {
     if(!isObjectId(req.params.id)) return handleNotFoundResponse(res, 'Invalid ID');
-    const query = (req.user.role === 'company') ? { postedByCompany = req.user.id, _id: req.params.id  } : { _id: req.params.id };
+    const query = (req.user.role === 'company') ? { postedByCompany: req.user.id, _id: req.params.id  } : { _id: req.params.id };
     await Job.findOne(query).then(data => {
         if(data) {
             res.status(200).json(data);
@@ -43,7 +43,7 @@ const read = async (req, res) => {
 
 const update = async (req, res) => {
     if(!isObjectId(req.params.id)) handleNotFoundResponse(res, 'Invalid ID');
-    const query = (req.user.role === 'company') ? { postedByCompany = req.user.id, _id: req.params.id  } : { _id: req.params.id };
+    const query = (req.user.role === 'company') ? { postedByCompany: req.user.id, _id: req.params.id  } : { _id: req.params.id };
     await Job.findOne(query).then(data => {
         if(data) {
             if(req.body.title) data.title = req.body.title;
@@ -74,7 +74,7 @@ const update = async (req, res) => {
 
 const destroy = (req, res) => {
     if(!isObjectId(req.params.id)) return handleNotFoundResponse(res, 'Invalid ID');
-    const query = (req.user.role === 'company') ? { postedByCompany = req.user.id, _id: req.params.id  } : { _id: req.params.id };
+    const query = (req.user.role === 'company') ? { postedByCompany: req.user.id, _id: req.params.id  } : { _id: req.params.id };
     Job.findOne(query).then(data => {
         if(data) {
             data.deleteOne({ _id: req.params.id }).then(data => {

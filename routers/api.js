@@ -48,7 +48,7 @@ apiRouterSecure.route('/jobs')
 apiRouterSecure.route('/jobs/:id')
     .get(authorizeRoles(['admin', 'student']), jobController.read)
     .put(authorizeRoles(['company']), validator.jobUpdate, jobController.update)
-    .delete(authorizeRoles(['admin', 'company']), authorize, jobController.destroy);
+    .delete(authorizeRoles(['admin', 'company']), jobController.destroy);
 
 apiRouterSecure.route('/jobs/:id/apply')
     .patch(authorizeRoles(['student']), jobController.apply)
