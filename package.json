@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/vim22al/job_portal/issues"
   },
-  "homepage": "https://github.com/vim22al/job_portal#readme"
+  "homepage": "https://github.com/vim22al/job_portal#readme",
+  "keywords": [],
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.8.0"
+  }
 }
