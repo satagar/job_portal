@@ -23,18 +23,6 @@ const admin = new mongoose.Schema({
         minLength: 10
     },
 
-    userType: {
-        type: String,
-        required: true,
-        default: "STUDENT"
-    },
-
-    userStatus: {
-        type: String,
-        required: true,
-        default: "APPROVED"
-    },
-
     createdAt: {
         type: Date,
         immutable: true,

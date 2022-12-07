@@ -20,19 +20,24 @@ const company = new mongoose.Schema({
     emailId: {
         type: String,
         lowercase: true,
-        minLength: 10
+        minLength: 10,
+        unique: true,
+        required: true
     },
 
-    userType: {
+    description: {
         type: String,
-        required: true,
-        default: "STUDENT"
+        required: true
     },
 
-    userStatus: {
-        type: String,
-        required: true,
-        default: "APPROVED"
+    career: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Job'
+    },
+
+    vacancy: {
+        type: Number,
+        required: true
     },
 
     createdAt: {
