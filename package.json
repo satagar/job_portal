@@ -1,0 +1,28 @@
+{
+  "name": "job_portal",
+  "version": "1.0.0",
+  "description": "Creating api for job portal application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hsingla378/job_portal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hsingla378/job_portal/issues"
+  },
+  "homepage": "https://github.com/hsingla378/job_portal#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "email-validator": "^2.0.4",
+    "express": "^4.18.2",
+    "mongodb": "^4.12.1",
+    "mongoose": "^6.7.5"
+  }
+}
