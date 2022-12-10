@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const { admin } = require('../constants/roles.constants')
+
 exports.adminSchema = new mongoose.Schema({
 
     userId: {
@@ -26,6 +28,7 @@ exports.adminSchema = new mongoose.Schema({
     },
     updatedAt: {
         type: Date,
+        immutable: false,
         default: () => {
             return Date.now()
         }

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { company } = require('../constants/roles.constants')
 
 exports.companySchema = new mongoose.Schema({
     companyName: {
@@ -28,6 +29,16 @@ exports.companySchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date
+        immutable: true,
+        default: () => {
+            return Date.now()
+        }
+    },
+    updatedAt: {
+        type: true,
+        immutable: false,
+        default: () => {
+            return Date.now()
+        }
     }
 })

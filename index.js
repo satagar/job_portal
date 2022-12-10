@@ -9,3 +9,8 @@ mongoose
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+
+const port = process.env.port || 3000
+
+EmpHire.listen(port)
+console.log("App is listening on port: ${port}")
