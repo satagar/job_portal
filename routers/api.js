@@ -5,6 +5,7 @@ const companyController = require('../controllers/company.controller');
 const validator = require('../middlewares/validators');
 const { authenticate, authorize, authorizeRoles } = require('../middlewares/auth');
 const jobController = require('../controllers/job.controller');
+const profileController = require('../controllers/profile.controller');
 
 const apiRouter = express.Router();
 const apiRouterSecure = express.Router();
@@ -22,6 +23,10 @@ apiRouter.route('/logout').post(authController.logout);
 apiRouter.route('/refresh').post(validator.authRefresh, authController.refresh);
 
 apiRouterSecure.use(authenticate);
+
+apiRouterSecure.route('/profile')
+    .get(profileController.read)
+    .put(profileController.update);
 
 apiRouterSecure.route('/students')
     .get(authorizeRoles(['admin', 'company']), studentController.index)
