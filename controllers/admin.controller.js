@@ -23,9 +23,9 @@ const create = async (req, res) => {
 }
 
 const read = async (req, res) => {
-    if(!isObjectId(req.params.id)) return handleNotFoundResponse(res, 'Invalid ID');
+    if (!isObjectId(req.params.id)) return handleNotFoundResponse(res, 'Invalid ID');
     await Admin.findById(req.params.id).then(data => {
-        if(data) {
+        if (data) {
             res.status(200).json(data);
         }
         else handleNotFoundResponse(res);
@@ -35,19 +35,18 @@ const read = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    if(!isObjectId(req.params.id)) handleNotFoundResponse(res, 'Invalid ID');
-    await Admin.findById(req.params.id).then(data => {
-        if(data) {
-            if(req.body.name) data.name = req.body.name;
-            if(req.body.email) data.email = req.body.email;
-            if(req.body.password) data.password = req.body.password;
-            if(req.body.isEnabled) data.isEnabled = req.body.isEnabled;
-            if(data.isModified()) {
-                data.save().then(data => {
-                    res.status(200).json(data);
-                }).catch(error => {
-                    handleServerErrorResponse(res, error);
-                });
+    if (!isObjectId(req.params.id)) handleNotFoundResponse(res, 'Invalid ID');
+    try {
+        const data = await Admin.findById(req.params.id)
+        if (data) {
+            if (req.body.name) data.name = req.body.name;
+            if (req.body.email) data.email = req.body.email;
+            if (req.body.password) data.password = req.body.password;
+            if (req.body.isEnabled) data.isEnabled = req.body.isEnabled;
+            if (data.isModified()) {
+                const savedData = await data.save();
+                res.status(200).json(savedData);
+
             }
             else {
                 res.status(200).json(data);
@@ -56,16 +55,16 @@ const update = async (req, res) => {
         else {
             handleNotFoundResponse(res);
         }
-    }).catch(error => {
+    } catch (error) {
         handleServerErrorResponse(res, error);
-    });
+    };
 }
 
 const destroy = (req, res) => {
-    if(!isObjectId(req.params.id)) return handleNotFoundResponse(res, 'Invalid ID');
-    if(req.params.id === req.user.id) return handleBadRequestResponse(res, 'Cannot delete Self');
+    if (!isObjectId(req.params.id)) return handleNotFoundResponse(res, 'Invalid ID');
+    if (req.params.id === req.user.id) return handleBadRequestResponse(res, 'Cannot delete Self');
     Admin.findById(req.params.id).then(data => {
-        if(data) {
+        if (data) {
             data.deleteOne({ _id: req.params.id }).then(data => {
                 res.status(200).json(data);
             }).catch(error => {

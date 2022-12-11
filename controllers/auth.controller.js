@@ -39,7 +39,7 @@ const login = async (req, res) => {
     }
     if(user) {
         user.refreshToken = generateRefreshToken();
-        user.save();
+        await user.save();
         res.status(200).json({
             accessToken: generateAccessToken(user),
             refreshToken: user.refreshToken
