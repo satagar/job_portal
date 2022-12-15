@@ -1,6 +1,7 @@
-const { text } = require('body-parser');
 const mongoose = require('mongoose');
 
+const status = ['open','close'];
+const type = ['fullTime','parTime'];
 const jobSchema= mongoose.Schema({
 
       name: {
@@ -20,6 +21,16 @@ const jobSchema= mongoose.Schema({
       description: {
         type: Text,
         required: true
+      },
+      jobType: {
+        type: String,
+        enum: type,
+        default:'fullTime'
+      },
+      jobStatus: {
+        type: String,
+        enum: status,
+        default:'open'
       },
       requirement: {
         type: Text,
